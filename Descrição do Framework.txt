@@ -1,0 +1,96 @@
+UPLINK Multiple Nodes
+MoT DL 20 bytes + UL 30 bytes
+To do LoRa Site Survey with Multiples LoRa Nodes (End Devices) with UPLINKS Managements
+Inserption of Data Positioning (GPS) to do Shadowing analyzes Level 6
+
+Se Modo Upload Não Ativado:
+	PHY_DL:
+		Se tem PacoteDL[20] no registro -> LoRa.parsePacket ?
+			armazena PacoteDL[0] // config parametros de radio atual
+			armazena PacoteDL[1] // config parametros novo de radio
+			armazena RSSI
+			armazena SNR
+				MAC:
+					Se PacoteDL[6] = 1 // Modo Upload Ativado
+						Ativa Modo Upload
+						PacoteUL[6] = 1
+
+					Se PacoteDL[7] = 3 // Modo Muda Radio
+						PacoteUL[7] = 3
+					Se PacoteDL[7] = 4 // Modo Muda Radio
+						PacoteUL[7] = 4
+					Se PacoteDL[7] = 4 // Modo Muda Radio
+						PacoteUL[7] = 6
+					Se PacoteDL[7] = 5 // Modo Muda Radio
+						PacoteUL[7] = 5
+	
+					tempo_entre_pacotes = PacoteDL[4:5]
+
+				NET_DL:
+					Se PacoteDL[8] = 1 // É para o endereço do NS
+		
+						TRANSP_DL:
+							Qtd_medidas_UL = PacoteDL[12:13] // Armazena número de Pacotes UL
+							
+						APP_DL: 
+							Liga Led?
+
+						APP_UL:
+							Monta PacoteUL[20]
+							Armazena LDR
+							Armazena GPS
+
+						TRANSP_UL:	
+							Conta_UL ++ // Incrementa
+							PacoteUL[12:13) = Qtd_medidas_UL
+							PacoteUL[14:15) = Conta UL
+						NET_UL:
+							PacoteUL[8] = ID GW
+							PacoteUL[10] = ID NS
+						MAC_UL
+							PacoteUL[4:5] = tempo_entre_pacotes UL
+							PacoteUL[6] = modo UL
+							PacoteUL[7] = st_radio
+						PHY:
+							PacoteUL[0] = RSSI DL
+							PacoteUL[1] = SNR DL									
+							Envia PacoteUL[30]
+							Muda Radio
+							Conta_UL = 0 // Zera UL
+							Ativa Modo UL
+
+
+Se Modo Upload Ativado & (millis_tempo_entre_pacotes == timeout) & (Conta_UL < Qtd_medidas_UL):
+
+	APP_UL:
+		Monta PacoteUL[20]
+		Armazena LDR
+		Armazena GPS
+
+	TRANSP_UL:	
+		Conta_UL ++ // Incrementa
+		PacoteUL[12:13) = Qtd_medidas_UL
+		PacoteUL[14:15) = Conta UL
+	NET_UL:
+		PacoteUL[8] = ID GW
+		PacoteUL[10] = ID NS
+	MAC_UL
+		PacoteUL[4:5] = tempo entre pacotes UL
+		PacoteUL[6] = modo UL
+		PacoteUL[7] = st_radio
+	PHY:
+		PacoteUL[0] = RSSI DL
+		PacoteUL[1] = SNR DL									
+		Envia PacoteUL[30]
+		millis_tempo_entre_pacotes = millis()
+
+Se senão (Conta_UL >= Qtd_medidas_UL):
+	Conta_UL = 0 
+	Desativa Modo UL
+
+Else 
+	Desativa Modo UL ???
+	
+
+
+		
