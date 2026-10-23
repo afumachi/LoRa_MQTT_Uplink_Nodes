@@ -1,6 +1,16 @@
 //================ RECEBE O PACOTE DA CAMADA FÍSICA ========
 void Mac_radio_receive_DL() { 
   // Aqui pode ser adicionado o Sleep Mode
+  // Leitura dos bytes MAC de tempo e comando
+  tempo_ul_ms            = int(PacoteDL[5])/1000;
+  uint8_t  modo_ul_root  = int(PacoteDL[6]);
+  if  (modo_ul_root == 1){
+    modo_ul              = 1;
+  }
+  else{
+    modo_ul              = 0;
+  }
+
 
   // Primeiro ciclo
     if ((recebe_comando_nova_radio == 1)){
@@ -21,7 +31,8 @@ void Mac_radio_receive_DL() {
       //Serial.println("[LSS - ÚLTIMO PACOTE]");
       confirma_novo_radio_sensor = 5;
     }
-    
+    tempo_entre_pacotes_ms = tempo_ul_ms;
+
     Net_radio_receive_DL();
 
 }

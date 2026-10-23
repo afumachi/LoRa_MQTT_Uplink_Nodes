@@ -50,13 +50,22 @@
 // ============= CAMADA FÍSICA
 // Parâmetros do LoRa
 #define FREQUENCY_IN_HZ            903E6    // LoRa Frequency
-#define txPower                    14       // TX power in dBm, defaults to 17
+#define txPower                    17       // TX power in dBm, defaults to 17
 #define spreadingFactorSetup       12       // ranges from 6-12,default 7
 #define signalBandwidthSetup       125E3    // signal bandwidth in Hz
 #define codingRateDenominatorSetup 8        // denominator of the coding rate
 
 // Habilita ou disabilita o uso CRC, por padrão o CRC não é usado.
 //#define loraCRC
+
+// ============================================================
+// CONFIGURAÇÕES LoRa OTIMIZADAS COM LUT
+// ============================================================
+uint8_t radio_config_index = 63;        // Índice da configuração (0-71)
+                                         // 63 = SF12, BW125kHz, CR4/8 (default)
+uint8_t radio_atual_index = 0;
+uint8_t valor_novo_potencia_radio = 17; // TX Power: 1-17 dBm (continua em byte 3)
+
 
 // ============== CAMADA MAC
 
@@ -67,6 +76,9 @@ byte PacoteDL[TAMANHO_PACOTE_DL];
 byte PacoteUL[TAMANHO_PACOTE_UL];
 
 bool modo_ul = 0;
+unsigned long tempo_entre_pacotes_ms = 0;
+unsigned long millis_tempo_entre_pacotes = 0;
+unsigned long tempo_ul_ms = 0;
 
 // Váriáveis utilizadas no código
 int RSSI_dBm_DL; // Variável com a potência rádio recebida (RSSI) em dBm
@@ -227,8 +239,25 @@ void setup() {
 //=======================================================================
 // A função loop irá executar repetidamente
 void loop() {
-  
-  Phy_radio_receive_DL(); // Função que recebe os pacotes pelo rádio
+
+/*
+unsigned long tempo_entre_pacotes_ms = 0;
+unsigned long millis_tempo_entre_pacotes = 0;
+unsigned long tempo_ul_ms = 0;
+*/
+
+
+  if (modo_ul == 0){
+    Phy_radio_receive_DL(); // Função que recebe os pacotes pelo rádio
+  }
+  else if((modo_ul == 1) & (millis() - millis_tempo_entre_pacotes >= tempo_entre_pacotes_ms) &(contadorUL < medidas_UL)){    
+    App_radio_send_UL();
+    millis_tempo_entre_pacotes = millis();
+  }
+  if(contadorUL >= medidas_UL){
+    modo_ul = 0;
+    contadorUL = 0;
+  } 
 
   // --- Controle de timeout do Comando 4 ---
   // Executado a cada iteração do loop, independente de novo pacote chegar

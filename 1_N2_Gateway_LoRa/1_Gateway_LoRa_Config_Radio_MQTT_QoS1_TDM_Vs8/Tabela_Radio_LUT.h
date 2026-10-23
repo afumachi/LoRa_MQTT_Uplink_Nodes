@@ -12,19 +12,6 @@ struct RadioConfig {
   uint8_t cr;        // Coding Rate Denominator (5 a 8)
 };
 
-
-// ========== ESTRUTURA DE DADOS COMPRIMIDA ==========
-// Cada configuração de rádio ocupa apenas 3 bytes em vez de 12 bytes
-/*
-
-struct RadioConfig {
-    uint8_t spreadingFactor;      // 7-12 (6 valores)
-    uint32_t signalBandwidth;     // 125000, 250000, 500000 (3 valores)
-    uint8_t codingRateDenominator; // 5, 6, 7, 8 (4 valores)
-};
-
-*/
-
 // ========== TABELA LUT - 72 COMBINAÇÕES INDEXADAS ==========
 // Organização: Índice 0-71 mapeia direto para SF+BW+CR
 // Reduz de 12 bytes para apenas 1 byte (índice) no PacoteDL[0]

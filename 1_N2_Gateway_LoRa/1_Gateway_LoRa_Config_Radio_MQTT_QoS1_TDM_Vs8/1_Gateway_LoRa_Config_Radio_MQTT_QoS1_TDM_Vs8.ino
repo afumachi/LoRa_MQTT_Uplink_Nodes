@@ -13,7 +13,6 @@
 // Remova o comentário da linha referente ao módulo que você está utilizando e comente a outro
 
 #define PKLORA_ESP32 // #define PKLORA_ESP32
-//#define AFLORA_ESP32 // #define AFLORA_ESP32 fabricação própria
 //#define PKLORA_NODEMCU // #define PKLORA_NODEMCU
 
 //=======================================================================
@@ -46,7 +45,7 @@ String CLIENT_ID ;         // ID único no broker
 // QoS usado nos dois sentidos (DL e UL). QoS1 = "at least once"
 // MQTT confirma o recebimento (PUBACK) e a biblioteca retransmite se necessário.
 
-#if defined(PKLORA_ESP32) || defined(AFLORA_ESP32)
+#if defined(PKLORA_ESP32)
 
   const int MQTT_QOS = 1;
 
@@ -85,25 +84,15 @@ void conectar_wifi_multi() {
   // Cadastre quantas redes você quiser (SSID, Senha)
 	wifiMulti.addAP("COLETTI_ext", "1145384609");
 	wifiMulti.addAP("2.4G COLETTI", "1145384609");
-
   wifiMulti.addAP("MJCA_FUNDOS", "21092429MJC@");
-
-
-
-
-
 	wifiMulti.addAP("aafwifi", "aaf12345678");
 	wifiMulti.addAP("CHACARA BBC", "Ailton1960#");
 	wifiMulti.addAP("Claro-EB66", "54b80a7deb66");
-  
 }
 
 // uffer e flag para o pacote DL recebido via MQTT
 volatile bool mqtt_dl_disponivel = false;
 byte          mqtt_dl_payload[TAMANHO_PACOTE_DL];
-
-
-
 
 // 1. Criamos uma estrutura para expor o ponteiro de função privada em tempo de compilação
 template<typename Tag, typename Tag::type M>
@@ -169,7 +158,7 @@ void setup() {
   mqttClient.onMessageAdvanced(mqtt_callback);
   conectar_mqtt();
 
-  #if defined(PKLORA_ESP32) || defined(AFLORA_ESP32)
+  #if defined(PKLORA_ESP32)
     // --- Inicialização da Comunicação SPI entre o ESP32 e o Módulo LoRa RFM95 ---
     SPI.begin(SCK_PIN, MISO_PIN, MOSI_PIN, NSS_PIN);
     delay(20);
@@ -271,7 +260,6 @@ void loop() {
     millis_standby_controle = millis();
     //reset_gateway_para_setup_inicial(); // Timeout atingido → volta ao SETUP
   }  
-
 
   // Imprime Radio Config a cada 10 [s]
   unsigned long tempo_loop_ms = 20000UL;  

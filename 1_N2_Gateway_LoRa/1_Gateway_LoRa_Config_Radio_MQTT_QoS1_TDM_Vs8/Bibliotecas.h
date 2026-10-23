@@ -17,7 +17,7 @@
 // 2 - Mapeamento dos Pinos
 //=======================================================================
 
-#if defined(PKLORA_ESP32) || defined(AFLORA_ESP32)
+#if defined(PKLORA_ESP32)
   #include <WiFi.h>
   #include <WiFiMulti.h>
 
@@ -176,30 +176,4 @@ unsigned long time_out_lora_ul = 60000UL;  // 1 min. time out Pacote_UL
 unsigned long millis_mqtt_controle = 0;
 unsigned long millis_radio_control = 0;
 bool st_led_vermelho = 0;
-
-  // adicionar um conjunto de variáveis PKT_UL e PKT_DL para deixar os pacotes independentes
-
-  // --- Physical Layer ---
-#define RSSI_DOWNLINK 0
-#define LQI_DOWNLINK  1
-#define RSSI_UPLINK   2
-#define LQI_UPLINK    3
-
-  // --- MAC Layer ---
-#define MAC_COUNTER_MSB 4 
-#define MAC_COUNTER_LSB 5
-#define MAC3_TEMPO 6
-#define MAC4_COMANDO 7
-
-  // --- Network Layer ---
-#define  RECEIVER_ID     8
-#define  NET2            9
-#define  TRANSMITTER_ID  10
-#define  NET4            11
-
-  // --- Transport Layer ---
-#define DL_COUNTER_MSB 12
-#define DL_COUNTER_LSB 13
-#define UL_COUNTER_MSB 14
-#define UL_COUNTER_LSB 15
 

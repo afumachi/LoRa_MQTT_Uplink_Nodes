@@ -49,7 +49,7 @@ void Phy_radio_receive_DL() {
       SNR_DL_bruto = LoRa.packetSnr();
 
       // ADICIONADO Variáveis de recebimento do valores de rádio LoRa
-
+      radio_atual_index = PacoteDL[0];
       // NOVO: Recebe índice de configuração (0-71) em PacoteDL[0]
       radio_config_index = PacoteDL[1];
 
@@ -66,7 +66,7 @@ void Phy_radio_receive_DL() {
       valor_novo_potencia_radio = PacoteDL[3];
 
       // Leitura dos bytes MAC de tempo e comando
-      tempo_radio               = PacoteDL[5];
+      tempo_ul_ms               = int(PacoteDL[5])/1000;
       recebe_comando_nova_radio = PacoteDL[7];
 
       // --- Lógica de inicio da contagem para MAC4_COMANDO == 4 ---

@@ -127,12 +127,7 @@
   int16_t alt = 785;
 #endif
 
-// ============================================================
-// CONFIGURAÇÕES LoRa OTIMIZADAS COM LUT
-// ============================================================
-uint8_t radio_config_index = 63;        // Índice da configuração (0-71)
-                                         // 63 = SF12, BW125kHz, CR4/8 (default)
-uint8_t valor_novo_potencia_radio = 20; // TX Power: 1-17 dBm (continua em byte 3)
+
 
 // Variáveis mantidas para compatibilidade com MAC (podem ser removidas depois):
 int valor_atual_spreadingfactor = 12;
@@ -181,7 +176,6 @@ unsigned long millis_mqtt_controle = 0;
 // VARIÁVEIS GLOBAIS - adicionar junto às demais declarações
 // ============================================================
 
-unsigned long millis_tempo_entre_pacotes = 0;   // conta intervalos entre PacoteUL == PacoteDL[5]
 unsigned long millis_standby_controle = 0;   // Marca o instante em que pacote foi recebido
 unsigned long millis_inicio_controle = 0;   // Marca o instante em que Cmd Radio PacoteDL[7] foi recebido
 unsigned long millis_radio_control = 0;

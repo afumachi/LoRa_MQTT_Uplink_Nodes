@@ -38,7 +38,6 @@ void Phy_mqtt_receive_DL() {
     Serial.println("PacoteDL recebido via MQTT");
     // ADICIONADO Variáveis de recebimento do valores de rádio LoRa
 
-
       // ADICIONADO Variáveis de recebimento do valores de rádio LoRa
 
     //#if defined(PKLORA_ESP32)
@@ -65,59 +64,9 @@ void Phy_mqtt_receive_DL() {
       valor_novo_spreadingfactor = config_atual.sf;
       valor_novo_bandwidth       = config_atual.bw;
       valor_novo_codingrate      = config_atual.cr;
-/*
-    #endif
-
-    #if defined(PKLORA_NODEMCU)
-      // 1. Recebe o índice do PacoteDL
-      uint8_t radio_config_index = PacoteDL[0];
-
-      // 2. Trava de segurança para não acessar índice fora da tabela (0 a 71)
-      if (radio_config_index >= 72) {
-        radio_config_index = 8; // Fallback seguro (ex: SF7, BW500k, CR5)
-      }
-
-      // 3. Leitura Direta (O ESP cuida da busca na Flash automaticamente)
-      valor_novo_spreadingfactor = RADIO_CONFIG_LUT[radio_config_index].sf;
-      valor_novo_bandwidth       = RADIO_CONFIG_LUT[radio_config_index].bw;
-      valor_novo_codingrate      = RADIO_CONFIG_LUT[radio_config_index].cr;
-
-    #endif
-
-
-// Exemplo Alternativo Sem memcpy_P (Leitura Direta de Bytes)
-// Caso prefira ler campo a campo utilizando macros específicas do AVR (pgm_read_byte e pgm_read_dword):
-
-uint8_t radio_config_index = PacoteDL[0];
-
-// Garante limite de segurança
-if (radio_config_index > 71) radio_config_index = 71;
-
-// Leitura individual dos campos armazenados na Flash
-valor_novo_spreadingfactor = pgm_read_byte(&(RADIO_CONFIG_LUT[radio_config_index].sf));
-valor_novo_bandwidth       = pgm_read_dword(&(RADIO_CONFIG_LUT[radio_config_index].bw));
-valor_novo_codingrate      = pgm_read_byte(&(RADIO_CONFIG_LUT[radio_config_index].cr));
-*/
-
-/*
-// antigo
-    valor_novo_spreadingfactor = PacoteDL[0];  // Byte DL[0] valor de rádio LoRa de Spreading Spectrum
-    valor_novo_bandwidth = PacoteDL[1];        // Byte DL[1] valor de rádio LoRa de Bandwidth
-
-    // Configura Valor de Bandwidth de acordo com o valor recebido no Byte[1]
-    if (valor_novo_bandwidth == 3) {
-      valor_novo_bandwidth = 500E3;
-    } else if (valor_novo_bandwidth == 2) {
-      valor_novo_bandwidth = 250E3;
-    } else if (valor_novo_bandwidth == 1) {
-      valor_novo_bandwidth = 125E3;
-    } 
-    
-    valor_novo_codingrate = PacoteDL[2];         // Byte DL[2] valor de rádio LoRa de CodingRate
-*/
 
     //valor_novo_potencia_radio = 2;//PacoteDL[3];     // Byte DL[3] valor de rádio LoRa de Potência de Rádio LoRa
-    tempo_radio = PacoteDL[6];                   // Byte DL[6] Recebe tempo de radio tx rx
+    tempo_radio = PacoteDL[5];                   // Byte DL[6] Recebe tempo de radio tx rx
     recebe_comando_nova_radio = PacoteDL[7];     // Byte DL[7] Recebe comando de reconfiguração de Rádio LoRa
 
     contador_medidas_total = (((PacoteDL[4])*256) + (PacoteDL[5])); // Número Total de medidas de teste LSS
@@ -352,7 +301,8 @@ void Phy_mqtt_send_UL() {
     Serial.println("Perda Enlace Nó Sensor - Retorna Configuracoes Radio LBDC");
     // Para limpar:
     memset(PacoteUL, 0, sizeof(PacoteUL));
-    PacoteUL[RECEIVER_ID] = 0;
+    PacoteUL[10] = 0;
+    PacoteUL[8] = 0;
     PacoteUL[7] = 10;
     confirma_novo_radio_sensor = 0;
     confirma_novo_radio_base = 0;
@@ -378,7 +328,6 @@ void Phy_mqtt_send_UL() {
   } else {
     Serial.println("MQTT desconectado – pacote UL descartado.");
   }
-
 
   if (confirma_novo_radio == 5){
     contadorDL = 0;
@@ -408,7 +357,6 @@ void AplicarConfiguracoesRadio() {
     primeiro_setup = 0;
   }
 }
-
 
 // =====================================================================
 //                     Callback MQTT (recepção de mensagens)
